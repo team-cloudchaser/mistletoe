@@ -1,0 +1,25 @@
+#!/bin/bash
+if [ "$1" == "" ] ; then
+	echo "Base config not specified. Available configs:"
+	ls -1 data | grep -E "\.json$" | while IFS= read -r file; do
+		echo "- ${file/\.json/}"
+	done
+	echo '
+Use "./load <config> <target>" to connect to a server.'
+	exit 1
+fi
+if [ "$2" == "" ]; then
+	echo "Target server not specified. Available targets:"
+	lineNo=0
+	cat "data/remote.tsv" | while IFS= read -r line; do
+		if [ "$lineNo" -gt "0" ]; then
+			echo "- $(printf "$line" | cut -d'	' -f1)"
+		fi
+		lineNo=$(($lineNo+1))
+	done
+	echo -e "\nUse \"./load ${1} <target>\" to connect to a server."
+	exit 1
+fi
+export MISTLETOE_LINE=$(cat "data/remote.tsv" | grep -E "^${2}\b")
+bash conf/run.sh "${1}" "${2}"
+exit

@@ -18,17 +18,18 @@ function downloadFile {
 }
 
 mkdir -p conf
-export auth=$(cat auth.list)
-if [ -f "pointer.txt" ]; then
+mkdir -p data
+export auth=$(cat conf/auth.list)
+if [ -f "conf/pointer.txt" ]; then
 	# ACE potential here, but literally the only way to include `&` for now
-	ptrUrl=$(echo "echo $(cat pointer.txt)" | bash)
-	downloadFile "list.txt"
+	ptrUrl=$(echo "echo $(cat conf/pointer.txt)" | bash)
+	downloadFile "list.txt" "${ptrUrl}"
 else
 	echo "Pointer file not found."
 fi
-if [ -f "list.tsv" ]; then
-	cat list.tsv | while IFS= read -r line; do
-		fileName="$(echo "${line}" | cut -d'	' -f1)"
+if [ -f "data/list.tsv" ]; then
+	cat data/list.tsv | while IFS= read -r line; do
+		fileName="./data/$(echo "${line}" | cut -d'	' -f1)"
 		# Same ACE
 		fileUrlExec="echo $(echo "${line}" | cut -d'	' -f2)"
 		fileUrl="$(echo "${fileUrlExec}" | bash)"
