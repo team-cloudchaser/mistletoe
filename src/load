@@ -8,6 +8,10 @@ if [ "$1" == "" ] ; then
 Use "./load <config> <target>" to connect to a server.'
 	exit 1
 fi
+if [ ! -f "data/$1.json" ]; then
+	echo "Base config \"$1\" does not exist."
+	exit 1
+fi
 if [ "$2" == "" ]; then
 	echo "Target server not specified. Available targets:"
 	lineNo=0
@@ -21,5 +25,9 @@ if [ "$2" == "" ]; then
 	exit 1
 fi
 export MISTLETOE_LINE=$(cat "data/remote.tsv" | grep -E "^${2}\b")
+if [ "$MISTLETOE_LINE" == "" ]; then
+	echo "Specified target does not exist."
+	exit 1
+fi
 bash conf/run.sh "${1}" "${2}"
 exit
