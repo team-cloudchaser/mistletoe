@@ -1,4 +1,5 @@
 #!/bin/bash
+# Go - build single
 if [ "$1" == "" ]; then
 	echo "The following entrypoints are available:"
 	ls -1 go | while IFS= read -r folder; do
