@@ -3,20 +3,22 @@ package utils
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
 
 type ParsedTargets struct {
-	fields []string
-	entries map[string][]string
+	Path string
+	Fields []string
+	Entries map[string][]string
 }
 
-func ParseTargetPath(path string) (ParsedTargets, error) {
+func ParseTargetPath(path string) (*ParsedTargets, error) {
 	var targetFile, err = os.Open(path)
 	if err != nil {
-		return ParsedTargets{}, err
+		return &ParsedTargets{}, err
 	}
 	defer targetFile.Close()
 	lineReader := bufio.NewScanner(targetFile)
@@ -24,7 +26,7 @@ func ParseTargetPath(path string) (ParsedTargets, error) {
 	lineReader.Buffer(lineBuffer, len(lineBuffer))
 	var lineNumber int = 0
 	var definedFields []string
-	var entriesMap map[string][]string
+	var entriesMap map[string][]string = make(map[string][]string)
 	for lineReader.Scan() {
 		var lineText string = lineReader.Text()
 		if lineNumber < 0 || len(lineText) <= 0 {
@@ -33,16 +35,25 @@ func ParseTargetPath(path string) (ParsedTargets, error) {
 		} else if lineNumber == 0 {
 			definedFields = strings.Split(lineText, "\t")
 			if definedFields[0] != "id" {
-				return ParsedTargets{fields: definedFields}, errors.New("The first field must be set to \"id\".")
+				return &ParsedTargets{Fields: definedFields}, errors.New("The first field must be set to \"id\".")
 			}
 		} else {
 			var lineArray []string = strings.Split(lineText, "\t")
 			if len(lineArray) != len(definedFields) {
-				return ParsedTargets{fields: definedFields}, errors.New("Amount of fields do not match on line " + strconv.Itoa(lineNumber + 1) + ".")
+				fmt.Println(definedFields)
+				return &ParsedTargets{Fields: definedFields}, errors.New("Amount of fields do not match on line " + strconv.Itoa(lineNumber + 1) + ". Should be " + strconv.Itoa(len(definedFields)) + " but instead got " + strconv.Itoa(len(lineArray)) + ".")
 			}
-			entriesMap[definedFields[0]] = lineArray[1:]
+			entriesMap[lineArray[0]] = lineArray[1:]
 		}
 		lineNumber ++
 	}
-	return ParsedTargets{fields: definedFields[1:], entries: entriesMap}, nil
+	return &ParsedTargets{Path: path, Fields: definedFields[1:], Entries: entriesMap}, nil
+}
+
+func ParseTargetWithFallback(id string) (*ParsedTargets, error) {
+	var parsed, err = ParseTargetPath("data/" + id + ".tsv")
+	if err == nil {
+		return parsed, err
+	}
+	return ParseTargetPath("data/default.tsv")
 }

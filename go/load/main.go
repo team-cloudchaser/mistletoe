@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/team-cloudchaser/mistletoe/help"
@@ -33,6 +34,18 @@ func main() {
 	} else if utils.IsFile("data/" + trimmedArgs[0] + ".json") {
 		help.ShowUsage("./load " + trimmedArgs[0] + " <targets>")
 		help.ShowHelp("loadTarget")
+		var parsedTargets, parseError = utils.ParseTargetWithFallback(trimmedArgs[0])
+		if parseError != nil {
+			utils.PrintLevel(utils.LogError, parseError.Error())
+		}
+		var targetsForSorting = make([]string, 0, len(parsedTargets.Entries))
+		for target, _ := range parsedTargets.Entries {
+			targetsForSorting = append(targetsForSorting, target)
+		}
+		slices.Sort(targetsForSorting)
+		for _, target := range targetsForSorting {
+			print("- " + target + "\n")
+		}
 	} else {
 		utils.PrintLevel(utils.LogError, "The specified template \"" + trimmedArgs[0] + "\" does not exist.")
 	}
