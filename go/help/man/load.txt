@@ -1,2 +1,6 @@
+This command generates a temporary file with the provided template and target specifier, then invokes the defined command with the generated file.
+
+<template>: The name of the template file. A list of available templates will be available below.
+<target>: The target specifier defined in either <template>.tsv or default.tsv.
 
 Available templates:
