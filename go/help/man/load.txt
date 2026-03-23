@@ -3,4 +3,8 @@ This command generates a temporary file with the provided template and target sp
 <template>: The name of the template file. A list of available templates will be available below.
 <target>: The target specifier defined in either <template>.tsv or default.tsv.
 
+The first argument also has the following special values as subcommands:
+- help: Show help without listing available templates.
+- version: Show version and copyright info.
+
 Available templates:

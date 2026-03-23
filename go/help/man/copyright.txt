@@ -1,0 +1,4 @@
+A simple CLI dialer for iterating configs from templates, licensed under GNU GPL v3.0.
+
+2026 © Team Cloudchaser
+https://github.com/team-cloudchaser/mistletoe
