@@ -1,3 +1,2 @@
-Usage: ./load <template> <targets>
 
 Available templates:

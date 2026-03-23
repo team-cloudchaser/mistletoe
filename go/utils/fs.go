@@ -3,12 +3,26 @@ package utils
 import (
 	"io/fs"
 	"os"
+	"path/filepath"
 )
 
+var CwdPath, _ = os.Getwd()
 var CwdFs = os.DirFS(".")
 
+func GetPath(path string) string {
+	return filepath.Join(CwdPath, path)
+}
+
+func IsFile(path string) bool {
+	var fileInfo, err = fs.Stat(CwdFs, path)
+	if err != nil {
+		return false
+	}
+	return !fileInfo.IsDir()
+}
+
 func IsDir(path string) bool {
-	fileInfo, err := fs.Stat(CwdFs, path)
+	var fileInfo, err = fs.Stat(CwdFs, path)
 	if err != nil {
 		return false
 	}
