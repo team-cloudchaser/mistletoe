@@ -1,9 +1,9 @@
-package update
+package main
 
 import (
 	"fmt"
 )
 
 func main() {
-	fmt.Printf("Test")
+	fmt.Println("Test")
 }

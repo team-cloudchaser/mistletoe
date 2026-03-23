@@ -1,9 +1,10 @@
-package load
+package main
 
 import (
 	"fmt"
+	"github.com/team-cloudchaser/mistletoe/utils"
 )
 
 func main() {
-	fmt.Printf("Test")
+	fmt.Println(utils.VersionString)
 }

@@ -3,3 +3,6 @@
 .zsh_history
 build
 .docker_name
+
+#go/build_version.bin
+build/*
