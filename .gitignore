@@ -6,3 +6,5 @@ build
 
 #go/build_version.bin
 build/*
+
+example/generated.json
