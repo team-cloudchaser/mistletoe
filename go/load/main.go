@@ -35,6 +35,7 @@ func main() {
 		help.ShowUsage("./load " + trimmedArgs[0] + " <targets>")
 		help.ShowHelp("loadTarget")
 		var parsedTargets, parseError = utils.ParseTargetWithFallback(trimmedArgs[0])
+		print(" (" + parsedTargets.Path + ")\n")
 		if parseError != nil {
 			utils.PrintLevel(utils.LogError, parseError.Error())
 		}

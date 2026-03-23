@@ -18,7 +18,7 @@ type ParsedTargets struct {
 func ParseTargetPath(path string) (*ParsedTargets, error) {
 	var targetFile, err = os.Open(path)
 	if err != nil {
-		return &ParsedTargets{}, err
+		return &ParsedTargets{Path: path}, err
 	}
 	defer targetFile.Close()
 	lineReader := bufio.NewScanner(targetFile)
@@ -35,13 +35,13 @@ func ParseTargetPath(path string) (*ParsedTargets, error) {
 		} else if lineNumber == 0 {
 			definedFields = strings.Split(lineText, "\t")
 			if definedFields[0] != "id" {
-				return &ParsedTargets{Fields: definedFields}, errors.New("The first field must be set to \"id\".")
+				return &ParsedTargets{Path: path, Fields: definedFields}, errors.New("The first field must be set to \"id\".")
 			}
 		} else {
 			var lineArray []string = strings.Split(lineText, "\t")
 			if len(lineArray) != len(definedFields) {
 				fmt.Println(definedFields)
-				return &ParsedTargets{Fields: definedFields}, errors.New("Amount of fields do not match on line " + strconv.Itoa(lineNumber + 1) + ". Should be " + strconv.Itoa(len(definedFields)) + " but instead got " + strconv.Itoa(len(lineArray)) + ".")
+				return &ParsedTargets{Path: path, Fields: definedFields}, errors.New("Amount of fields do not match on line " + strconv.Itoa(lineNumber + 1) + ". Should be " + strconv.Itoa(len(definedFields)) + " but instead got " + strconv.Itoa(len(lineArray)) + ".")
 			}
 			entriesMap[lineArray[0]] = lineArray[1:]
 		}
