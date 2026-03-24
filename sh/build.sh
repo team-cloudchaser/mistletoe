@@ -45,11 +45,11 @@ cat conf/gobuild-${1:-release}.txt | while IFS= read -r GOUNION; do
 	if [ "$GOOS" == "windows" ]; then
 		zip -qr9 "../releases/$GOOS-$GOARCH.zip" *
 	elif [ "$GOOS" == "android" ]; then
-		tar -cf "../releases/$GOOS-$GOARCH.tar" *
+		tar -chf "../releases/$GOOS-$GOARCH.tar" *
 		gzip -v9 "../releases/$GOOS-$GOARCH.tar"
 		mv "../releases/$GOOS-$GOARCH.tar.gz" "../releases/$GOOS-$GOARCH.tgz"
 	else
-		tar -cf "../releases/$GOOS-$GOARCH.tar" *
+		tar -chf "../releases/$GOOS-$GOARCH.tar" *
 		brotli -jv9 "../releases/$GOOS-$GOARCH.tar"
 	fi
 	cd ../..
