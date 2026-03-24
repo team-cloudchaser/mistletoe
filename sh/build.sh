@@ -22,6 +22,19 @@ cat conf/goTargets.txt | while IFS= read -r GOUNION; do
 			cd ..
 		fi
 	done
-	# Zip them into bundles
 	rmdir "$buildDir" 2>/dev/null
+	if [ ! -e "$buildDir" ]; then
+		echo "Empty build result for \"$GOOS-$GOARCH\"."
+		continue
+	fi
+	# Zip them into bundles
+	cd "$buildDir"
+	if [ "$GOOS" == "windows" ]; then
+		zip -r9 "../releases/$GOOS-$GOARCH.zip" *
+	else
+		tar -cf "../releases/$GOOS-$GOARCH.tar" *
+		brotli -jv9 "../releases/$GOOS-$GOARCH.tar"
+	fi
+	cd ../..
+	rm -r "$buildDir"
 done
