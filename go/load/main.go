@@ -80,14 +80,14 @@ func main() {
 			}
 			var tmpFileWriter = bufio.NewWriter(tmpFile)
 			var templateReader = utils.GetConstrainedScanner(templateFile)
-			var writeSucceeded = parsedTargets.Select(trimmedArgs[1], templateReader, tmpFileWriter)
+			var writeError = parsedTargets.Select(trimmedArgs[1], templateReader, tmpFileWriter)
 			tmpFile.Close()
 			templateFile.Close()
-			if writeSucceeded {
+			if writeError == nil {
 				// Run the dialer
 				print("WIP")
 			} else {
-				utils.PrintLevel(utils.LogError, "Failed to write to the temporary file.")
+				utils.PrintLevel(utils.LogError, writeError.Error())
 			}
 			tmpFile.Sync()
 		}

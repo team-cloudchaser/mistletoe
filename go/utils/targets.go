@@ -79,6 +79,24 @@ func GetTemporaryFile() (*os.File, error) {
 	return file, nil
 }
 
-func (pt *ParsedTargets) Select(targetId string, reader *bufio.Scanner, writer *bufio.Writer) bool {
-	return false
+func (pt *ParsedTargets) Select(targetId string, reader *bufio.Scanner, writer *bufio.Writer) error {
+	var fields, exists = pt.Entries[targetId]
+	if (!exists) {
+		return errors.New("Selected target does not exist.")
+	}
+	var replaceMap = make([]string, 0, len(pt.Fields) << 1)
+	for i, key := range pt.Fields {
+		replaceMap = append(replaceMap, "__" + strings.ToUpper(key) + "__", fields[i])
+	}
+	var replacer = strings.NewReplacer(replaceMap...)
+	for reader.Scan() {
+		var replacedText = replacer.Replace(reader.Text())
+		//fmt.Println(replacedText)
+		var _, err = writer.WriteString(replacedText + "\n")
+		if err != nil {
+			return errors.New("Failed to write to the temporary file.")
+		}
+		writer.Flush()
+	}
+	return nil
 }
