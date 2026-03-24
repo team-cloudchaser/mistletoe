@@ -10,9 +10,22 @@ cat conf/gobuild-${1:-release}.txt | while IFS= read -r GOUNION; do
 	rm -r "$buildDir" 2>/dev/null
 	mkdir -p "$buildDir"
 	# Include additional files
+	ls -1 includes | while IFS= read -r file; do
+		ln -s ../../includes/$file "$buildDir"
+	done
 	# Build Go executables
 	ls -1 go | while IFS= read -r entrypoint; do
 		if [ -f "go/${entrypoint}/main.go" ]; then
+			if [ "$GOARCH" == "arm64" ]; then
+				if [ "$GOOS" == "darwin" ]; then
+					GOARM64="v8.4"
+				else
+					GOARM64="v8.2"
+				fi
+			fi
+			if [ "$GOARCH" == "amd64" ]; then
+				GOAMD64="v2"
+			fi
 			cd go
 			echo "Building \"$entrypoint\" for target \"$GOOS-$GOARCH...\""
 			go build -o ".$buildDir/$entrypoint" -trimpath -buildvcs=false -ldflags="-s -w -buildid=" "./$entrypoint"
@@ -30,7 +43,7 @@ cat conf/gobuild-${1:-release}.txt | while IFS= read -r GOUNION; do
 	# Zip them into bundles
 	cd "$buildDir"
 	if [ "$GOOS" == "windows" ]; then
-		zip -r9 "../releases/$GOOS-$GOARCH.zip" *
+		zip -qr9 "../releases/$GOOS-$GOARCH.zip" *
 	else
 		tar -cf "../releases/$GOOS-$GOARCH.tar" *
 		brotli -jv9 "../releases/$GOOS-$GOARCH.tar"
