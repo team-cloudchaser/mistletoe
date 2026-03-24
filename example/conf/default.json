@@ -1,3 +1,5 @@
 {
+	"windowsPrefix": "bin-windows/xray",
+	"linuxPrefix": "bin-linux/xray",
 	"run": ["xray", "run", "-c", "%s"]
 }

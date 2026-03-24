@@ -23,12 +23,25 @@ func GetTemporaryFile() (*os.File, error) {
 
 type DialConfig struct {
 	IsValidConfig bool
-	Path string
+	FilePath string
 	Run []string `json:"run,omitempty"`
+	WindowsExecPrefix string `json:"windowsPrefix,omitempty"`
+	LinuxExecPrefix string `json:"linuxPrefix,omitempty"`
+}
+
+func (dc *DialConfig) Validate() (error) {
+	var err error = nil
+	if dc.IsValidConfig {
+		if len(dc.Run) <= 0 {
+			dc.IsValidConfig = false
+			err = errors.New("No dialer command is specified.")
+		}
+	}
+	return err
 }
 
 func ParseDialConfigPath(path string) (*DialConfig, error) {
-	var parsedDialConfig = DialConfig{Path: path, IsValidConfig: false}
+	var parsedDialConfig = DialConfig{FilePath: path, IsValidConfig: false}
 	var dialConfigFile, err0 = os.Open(path)
 	if err0 != nil {
 		return &parsedDialConfig, err0

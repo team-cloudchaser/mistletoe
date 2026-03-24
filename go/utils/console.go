@@ -20,11 +20,11 @@ func PrintLevel(level uint8, format string, args ...any) {
 		case LogError:
 			baseForm = "\x1b[1;31mError\x1b[0m"
 		case LogWarn:
-			baseForm = "\x1b[1;33mWarning\x1b[0m"
+			baseForm = "\x1b[1;33mWarn \x1b[0m"
 		case LogInfo:
-			baseForm = "\x1b[1;32mInfo\x1b[0m"
+			baseForm = "\x1b[1;32mInfo \x1b[0m"
 		case LogDebug:
 			baseForm = "\x1b[1;34mDebug\x1b[0m"
 	}
-	fmt.Printf(baseForm + ": " + format + "\n", args...)
+	fmt.Printf("[" + baseForm + "] " + format + "\n", args...)
 }

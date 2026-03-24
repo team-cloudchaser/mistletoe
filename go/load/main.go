@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 
@@ -90,8 +91,34 @@ func main() {
 					utils.PrintLevel(utils.LogError, dialConfigError.Error())
 					os.Exit(1)
 				}
-				utils.PrintLevel(utils.LogDebug, "%o", dialConfig)
-				print("WIP")
+				//utils.PrintLevel(utils.LogDebug, "%o", dialConfig)
+				utils.PrintLevel(utils.LogDebug, "Dialer config: [%s]", dialConfig.FilePath)
+				var dialConfigValidateError = dialConfig.Validate()
+				if dialConfigValidateError != nil {
+					utils.PrintLevel(utils.LogError, dialConfigValidateError.Error())
+					os.Exit(1)
+				}
+				var dialerExecPath string
+				switch runtime.GOOS {
+					case "windows":
+						if len(dialConfig.WindowsExecPrefix) > 0 {
+							dialerExecPath = dialConfig.WindowsExecPrefix + "/" + dialConfig.Run[0]
+						}
+					case "linux", "android":
+						if len(dialConfig.LinuxExecPrefix) > 0 {
+							dialerExecPath = dialConfig.LinuxExecPrefix + "/" + dialConfig.Run[0]
+						}
+					default:
+						utils.PrintLevel(utils.LogFatal, "Unsupported OS: %s", runtime.GOOS)
+						os.Exit(1)
+				}
+				//print(dialerExecPath)
+				if len(dialerExecPath) > 0 && utils.IsFile(dialerExecPath) {
+					utils.PrintLevel(utils.LogInfo, "Dialer path [%s] (found)", dialerExecPath)
+				} else {
+					dialerExecPath = dialConfig.Run[0]
+					utils.PrintLevel(utils.LogInfo, "Dialer path: [%s] (fallback)", dialerExecPath)
+				}
 			} else {
 				utils.PrintLevel(utils.LogError, writeError.Error())
 			}
