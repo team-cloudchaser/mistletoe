@@ -3,7 +3,7 @@
 export CGO_ENABLED=0
 rm -r "./build/releases" 2>/dev/null
 mkdir -p "./build/releases"
-cat conf/go-${1:-release}.txt | while IFS= read -r GOUNION; do
+cat conf/gobuild-${1:-release}.txt | while IFS= read -r GOUNION; do
 	export GOOS=$(printf $GOUNION | cut -d'/' -f1)
 	export GOARCH=$(printf $GOUNION | cut -d'/' -f2)
 	buildDir="./build/$GOOS-$GOARCH"
