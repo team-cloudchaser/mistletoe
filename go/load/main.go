@@ -86,7 +86,7 @@ func main() {
 			templateFile.Close()
 			if writeError == nil {
 				// Run the dialer
-				var dialConfig, dialConfigError = utils.ParseDialConfigPath("conf/default.json")
+				var dialConfig, dialConfigError = utils.ParseDialConfigWithFallback(trimmedArgs[0])
 				if dialConfigError != nil {
 					utils.PrintLevel(utils.LogError, dialConfigError.Error())
 					os.Exit(1)

@@ -68,3 +68,11 @@ func ParseDialConfigPath(path string) (*DialConfig, error) {
 	}
 	return &parsedDialConfig, nil
 }
+
+func ParseDialConfigWithFallback(templateId string) (*DialConfig, error) {
+	var parsed, err = ParseDialConfigPath("conf/" + templateId + ".json")
+	if err == nil {
+		return parsed, err
+	}
+	return ParseDialConfigPath("conf/default.json")
+}
