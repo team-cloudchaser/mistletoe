@@ -66,19 +66,6 @@ func GetTemplateFile(templateId string) (*os.File, error) {
 	return templateFile, nil
 }
 
-const tempFileName string = "generated.json"
-func GetTemporaryFile() (*os.File, error) {
-	var err0 = os.Remove("generated.json")
-	if err0 != nil {
-		return nil, err0
-	}
-	var file, err1 = os.OpenFile("generated.json", os.O_WRONLY | os.O_CREATE, 0640)
-	if err1 != nil {
-		return nil, err1
-	}
-	return file, nil
-}
-
 func (pt *ParsedTargets) Select(targetId string, reader *bufio.Scanner, writer *bufio.Writer) error {
 	var fields, exists = pt.Entries[targetId]
 	if (!exists) {
