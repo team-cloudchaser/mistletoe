@@ -1,3 +1,5 @@
+// Copyright 2026 © Team Cloudchaser
+
 package main
 
 import (
@@ -59,6 +61,7 @@ func main() {
 			}
 			os.Exit(1)
 		} else {
+			var _ = utils.CreateTemplate()
 			print("WIP")
 		}
 	} else {

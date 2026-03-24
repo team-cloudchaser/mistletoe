@@ -1,3 +1,5 @@
+// Copyright 2026 © Team Cloudchaser
+
 package mistletoe
 
 import (
