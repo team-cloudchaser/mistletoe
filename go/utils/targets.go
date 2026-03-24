@@ -59,3 +59,28 @@ func ParseTargetWithFallback(id string) (*ParsedTargets, error) {
 	}
 	return ParseTargetPath("data/default.tsv")
 }
+
+func GetTemplateLineReader(id string) (*bufio.Scanner, error) {
+	var templateFile, err = os.Open("data/" + id + ".json")
+	if err != nil {
+		return nil, err
+	}
+	lineReader := bufio.NewScanner(templateFile)
+	var lineBuffer []byte = make([]byte, 16384)
+	lineReader.Buffer(lineBuffer, len(lineBuffer))
+	return lineReader, nil
+}
+
+const tempFileName string = "generated.json"
+func GetTemporaryFile() (*os.File, error) {
+	os.Remove("generated.json")
+	var file, err = os.OpenFile("generated.json", os.O_WRONLY | os.O_CREATE, 0640)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
+}
+
+func (pt *ParsedTargets) Select(id string, reader *bufio.Scanner, writer *bufio.Writer) bool {
+	return false
+}
