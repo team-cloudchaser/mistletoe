@@ -1,0 +1,46 @@
+name: "Build on releases"
+
+on:
+  push:
+    tags:
+      - "[0-9]+.*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "build-on-release"
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      #- name: Install Nix
+        #uses: cachix/install-nix-action@v31
+        #with:
+          #nix_path: nixpkgs=channel:nixos-unstable
+      - name: Install dependencies
+        run: "./shx prepare"
+      - name: Install Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go/go.mod"
+      - name: Quickly build the project
+        run: "./shx build"
+      - name: Update the per-push release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          artifacts: "build/releases/*"
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          makeLatest: false
+          prerelease: true
+          removeArtifacts: true
+          replacesArtifacts: true
