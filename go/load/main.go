@@ -5,6 +5,7 @@ package main
 import (
 	"bufio"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"slices"
@@ -69,6 +70,7 @@ func main() {
 				utils.PrintLevel(utils.LogError, parseError.Error())
 				os.Exit(1)
 			}
+			utils.PrintLevel(utils.LogDebug, "Target list: [%s]", parsedTargets.Path)
 			var tmpFile, err0 = utils.GetTemporaryFile()
 			if err0 != nil {
 				utils.PrintLevel(utils.LogError, err0.Error())
@@ -119,6 +121,18 @@ func main() {
 					dialerExecPath = dialConfig.Run[0]
 					utils.PrintLevel(utils.LogInfo, "Dialer path: [%s] (fallback)", dialerExecPath)
 				}
+				for i, e := range dialConfig.Run {
+					if e == "%s" {
+						dialConfig.Run[i] = utils.TmpFileName
+					}
+				}
+				//utils.PrintLevel(utils.LogDebug, "%o", dialConfig.Run)
+				var dialerProcess = exec.Command(dialerExecPath, dialConfig.Run[1:]...)
+				dialerProcess.Stdout = os.Stdout
+				dialerProcess.Stderr = os.Stderr
+				var _ = dialerProcess.Start()
+				utils.PrintLevel(utils.LogInfo, "Dialer PID: %d", dialerProcess.Process.Pid)
+				var _ = dialerProcess.Wait()
 			} else {
 				utils.PrintLevel(utils.LogError, writeError.Error())
 			}
