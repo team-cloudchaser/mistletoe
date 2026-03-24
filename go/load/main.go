@@ -41,22 +41,26 @@ func main() {
 		help.ShowHelp("copyright")
 		os.Exit(0)
 	} else if utils.IsFile("data/" + trimmedArgs[0] + ".json") {
-		help.ShowUsage("./load " + trimmedArgs[0] + " <targets>")
-		help.ShowHelp("loadTarget")
-		var parsedTargets, parseError = utils.ParseTargetWithFallback(trimmedArgs[0])
-		print(" (" + parsedTargets.Path + ")\n")
-		if parseError != nil {
-			utils.PrintLevel(utils.LogError, parseError.Error())
+		if len(trimmedArgs) < 2 {
+			help.ShowUsage("./load " + trimmedArgs[0] + " <targets>")
+			help.ShowHelp("loadTarget")
+			var parsedTargets, parseError = utils.ParseTargetWithFallback(trimmedArgs[0])
+			print(" (" + parsedTargets.Path + ")\n")
+			if parseError != nil {
+				utils.PrintLevel(utils.LogError, parseError.Error())
+			}
+			var targetsForSorting = make([]string, 0, len(parsedTargets.Entries))
+			for target, _ := range parsedTargets.Entries {
+				targetsForSorting = append(targetsForSorting, target)
+			}
+			slices.Sort(targetsForSorting)
+			for _, target := range targetsForSorting {
+				print("- " + target + "\n")
+			}
+			os.Exit(1)
+		} else {
+			print("WIP")
 		}
-		var targetsForSorting = make([]string, 0, len(parsedTargets.Entries))
-		for target, _ := range parsedTargets.Entries {
-			targetsForSorting = append(targetsForSorting, target)
-		}
-		slices.Sort(targetsForSorting)
-		for _, target := range targetsForSorting {
-			print("- " + target + "\n")
-		}
-		os.Exit(1)
 	} else {
 		utils.PrintLevel(utils.LogError, "The specified template \"" + trimmedArgs[0] + "\" does not exist.")
 		os.Exit(1)
