@@ -34,3 +34,5 @@ Values of the rest of the fields will replace all occurances of the capitalized 
 
 ### Templates
 Any valid JSON config file with replaceable placeholder fields is viable.
+
+For writing valid Xray config files, head to [`xtls.github.io`](https://xtls.github.io/en/config/).
