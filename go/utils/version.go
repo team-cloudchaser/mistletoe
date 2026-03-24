@@ -18,5 +18,5 @@ func VersionToString(version []uint8) string {
 var VersionString string = VersionToString(mistletoe.Version)
 
 func PrintBanner() {
-	fmt.Printf("\x1b[1;37mMistletoe v%s\x1b[0m\n\n", VersionString)
+	fmt.Printf("\x1b[1;37mWinter Mistletoe v%s\x1b[0m\n\n", VersionString)
 }
