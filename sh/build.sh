@@ -19,7 +19,7 @@ cat conf/gobuild-${1:-release}.txt | while IFS= read -r GOUNION; do
 			if [ "$GOARCH" == "arm64" ]; then
 				if [ "$GOOS" == "darwin" ]; then
 					GOARM64="v8.4"
-				elif [ "$GOOS" != "android" ]
+				elif [ "$GOOS" != "android" ]; then
 					GOARM64="v8.2"
 				fi
 			fi
