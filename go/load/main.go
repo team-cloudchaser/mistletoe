@@ -104,7 +104,7 @@ func main() {
 				switch runtime.GOOS {
 					case "windows":
 						if len(dialConfig.WindowsExecPrefix) > 0 {
-							dialerExecPath = dialConfig.WindowsExecPrefix + "/" + dialConfig.Run[0]
+							dialerExecPath = dialConfig.WindowsExecPrefix + "/" + dialConfig.Run[0] + ".exe"
 						}
 					case "linux", "android":
 						if len(dialConfig.LinuxExecPrefix) > 0 {
