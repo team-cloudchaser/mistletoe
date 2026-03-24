@@ -1,0 +1,42 @@
+name: "Build on commit pushes"
+
+on:
+  push:
+    branches:
+      - "main"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "build-on-push"
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Quickly build the project
+        run: "nix-shell nix/env.nix --pure --command './shx build'"
+      - name: Update the per-push release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          artifacts: "build/releases/*"
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          makeLatest: false
+          prerelease: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          name: "Latest push build"
+          tag: "latest-push"
