@@ -20,8 +20,8 @@
 }
 ```
 - `run`: The command invoked after config generation is finished. The first string contains the executable file to run, while the rest denotes arguments, with `%s` replaced with the name of the generated config file.
-- `windowsPrefix`: The executable path prefix when on Windows. Delimited with forward slashes `/`.
-- `linuxPrefix`: The executable path prefix when on Linux or Android.
+- `windowsPrefix`: (optional) The executable path prefix when on Windows. Delimited with forward slashes `/`.
+- `linuxPrefix`: (optional) The executable path prefix when on Linux or Android.
 
 ### Target list
 ```tsv

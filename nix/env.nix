@@ -22,6 +22,8 @@ pkgs.mkShell {
 		gzip
 		gnupg
 		# Development dependencies
+		brotli
+		zip
 		go
 	];
 	GIT_EDITOR = "${pkgs.nano}/bin/nano";
