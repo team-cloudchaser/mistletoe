@@ -10,10 +10,7 @@ import (
 
 const TmpFileName string = "generated.json"
 func GetTemporaryFile() (*os.File, error) {
-	var err0 = os.Remove("generated.json")
-	if err0 != nil {
-		return nil, err0
-	}
+	var _ = os.Remove("generated.json")
 	var file, err1 = os.OpenFile(TmpFileName, os.O_WRONLY | os.O_CREATE, 0640)
 	if err1 != nil {
 		return nil, err1

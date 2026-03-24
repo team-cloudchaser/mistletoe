@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-test:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
           go-version-file: "go/go.mod"
       - name: Quickly build the project
         run: "./shx build"
-      - name: Update the per-push release
+      - name: Publish the tagged release
         uses: ncipollo/release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
