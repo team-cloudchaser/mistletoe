@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - "main"
+    paths:
+      - ".github/workflows/buildOnPush.yml"
+      - "conf/**"
+      - "go/**"
+      - "includes/**"
+      - "sh/**"
 
   workflow_dispatch:
 
