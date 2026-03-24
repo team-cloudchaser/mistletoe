@@ -23,9 +23,7 @@ func ParseTargetPath(path string) (*ParsedTargets, error) {
 		return &ParsedTargets{Path: path}, err
 	}
 	defer targetFile.Close()
-	lineReader := bufio.NewScanner(targetFile)
-	var lineBuffer []byte = make([]byte, 16384)
-	lineReader.Buffer(lineBuffer, len(lineBuffer))
+	lineReader := GetConstrainedScanner(targetFile)
 	var lineNumber int = 0
 	var definedFields []string
 	var entriesMap map[string][]string = make(map[string][]string)
@@ -52,35 +50,35 @@ func ParseTargetPath(path string) (*ParsedTargets, error) {
 	return &ParsedTargets{Path: path, Fields: definedFields[1:], Entries: entriesMap}, nil
 }
 
-func ParseTargetWithFallback(id string) (*ParsedTargets, error) {
-	var parsed, err = ParseTargetPath("data/" + id + ".tsv")
+func ParseTargetWithFallback(templateId string) (*ParsedTargets, error) {
+	var parsed, err = ParseTargetPath("data/" + templateId + ".tsv")
 	if err == nil {
 		return parsed, err
 	}
 	return ParseTargetPath("data/default.tsv")
 }
 
-func GetTemplateLineReader(id string) (*bufio.Scanner, error) {
-	var templateFile, err = os.Open("data/" + id + ".json")
+func GetTemplateFile(templateId string) (*os.File, error) {
+	var templateFile, err = os.Open("data/" + templateId + ".json")
 	if err != nil {
 		return nil, err
 	}
-	lineReader := bufio.NewScanner(templateFile)
-	var lineBuffer []byte = make([]byte, 16384)
-	lineReader.Buffer(lineBuffer, len(lineBuffer))
-	return lineReader, nil
+	return templateFile, nil
 }
 
 const tempFileName string = "generated.json"
 func GetTemporaryFile() (*os.File, error) {
-	os.Remove("generated.json")
-	var file, err = os.OpenFile("generated.json", os.O_WRONLY | os.O_CREATE, 0640)
-	if err != nil {
-		return nil, err
+	var err0 = os.Remove("generated.json")
+	if err0 != nil {
+		return nil, err0
+	}
+	var file, err1 = os.OpenFile("generated.json", os.O_WRONLY | os.O_CREATE, 0640)
+	if err1 != nil {
+		return nil, err1
 	}
 	return file, nil
 }
 
-func (pt *ParsedTargets) Select(id string, reader *bufio.Scanner, writer *bufio.Writer) bool {
+func (pt *ParsedTargets) Select(targetId string, reader *bufio.Scanner, writer *bufio.Writer) bool {
 	return false
 }

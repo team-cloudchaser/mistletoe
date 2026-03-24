@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bufio"
 	"os"
 	"path/filepath"
 	"slices"
@@ -50,6 +51,7 @@ func main() {
 			print(" (" + parsedTargets.Path + ")\n")
 			if parseError != nil {
 				utils.PrintLevel(utils.LogError, parseError.Error())
+				os.Exit(1)
 			}
 			var targetsForSorting = make([]string, 0, len(parsedTargets.Entries))
 			for target, _ := range parsedTargets.Entries {
@@ -61,8 +63,33 @@ func main() {
 			}
 			os.Exit(1)
 		} else {
-			var _ = utils.CreateTemplate()
-			print("WIP")
+			var parsedTargets, parseError = utils.ParseTargetWithFallback(trimmedArgs[0])
+			if parseError != nil {
+				utils.PrintLevel(utils.LogError, parseError.Error())
+				os.Exit(1)
+			}
+			var tmpFile, err0 = utils.GetTemporaryFile()
+			if err0 != nil {
+				utils.PrintLevel(utils.LogError, err0.Error())
+				os.Exit(1)
+			}
+			var templateFile, err1 = utils.GetTemplateFile(trimmedArgs[0])
+			if err1 != nil {
+				utils.PrintLevel(utils.LogError, err1.Error())
+				os.Exit(1)
+			}
+			var tmpFileWriter = bufio.NewWriter(tmpFile)
+			var templateReader = utils.GetConstrainedScanner(templateFile)
+			var writeSucceeded = parsedTargets.Select(trimmedArgs[1], templateReader, tmpFileWriter)
+			tmpFile.Close()
+			templateFile.Close()
+			if writeSucceeded {
+				// Run the dialer
+				print("WIP")
+			} else {
+				utils.PrintLevel(utils.LogError, "Failed to write to the temporary file.")
+			}
+			tmpFile.Sync()
 		}
 	} else {
 		utils.PrintLevel(utils.LogError, "The specified template \"" + trimmedArgs[0] + "\" does not exist.")

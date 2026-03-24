@@ -3,6 +3,7 @@
 package utils
 
 import (
+	"bufio"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -29,4 +30,11 @@ func IsDir(path string) bool {
 		return false
 	}
 	return fileInfo.IsDir()
+}
+
+func GetConstrainedScanner(file *os.File) *bufio.Scanner {
+	lineReader := bufio.NewScanner(file)
+	var lineBuffer []byte = make([]byte, 16384)
+	lineReader.Buffer(lineBuffer, len(lineBuffer))
+	return lineReader
 }
