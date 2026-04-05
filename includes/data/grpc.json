@@ -52,24 +52,27 @@
 		"settings": {
 			"address": "__SERVER__",
 			"port": __PORT__,
-			"flow": "xtls-rprx-vision",
 			"id": "__UUID__",
-			"encryption": "none"
+			"encryption": "__VENC__"
 		},
 		"streamSettings": {
-			"network": "raw",
-			"security": "reality",
-			"realitySettings": {
+			"network": "grpc",
+			"security": "tls",
+			"tlsSettings": {
 				"serverName": "__SERVER__",
+				"verifyPeerCertByName": "__PNAME__",
+				"alpn": ["h2", "http/1.1"],
+				"minVersion": "1.3",
 				"fingerprint": "chrome",
 				"shortId": "__SID__",
-				"password": "__PBK__",
-				"spiderX": "/"
+				"pinnedPeerCertSha256": "__PCS__",
+				"echForceQuery": "full",
+				"echConfigList": "__ECH__"
 			},
-			"rawSettings": {
-				"header": {
-					"type": "none"
-				}
+			"grpcSettings": {
+				"authority": "__SERVER__",
+				"serviceName": "__GRPC__",
+				"multiMode": false
 			}
 		}
 	}],
