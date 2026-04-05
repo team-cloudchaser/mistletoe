@@ -1,0 +1,106 @@
+{
+	"version": {
+		"min": "25.10.15"
+	},
+	"log": {
+		"loglevel": "warn",
+		"dnsLog": true,
+		"maskAddress": "/24+/48"
+	},
+	"inbounds": [{
+		"tag": "i-socks",
+		"protocol": "socks",
+		"listen": "127.0.0.1",
+		"port": 10804,
+		"settings": {
+			"udp": true,
+			"ip": "127.0.0.1"
+		},
+		"sniffing": {
+			"enabled": true,
+			"routeOnly": true,
+			"destOverride": ["tls", "quic", "fakedns"]
+		}
+	}, {
+		"tag": "i-http",
+		"protocol": "http",
+		"listen": "127.0.0.1",
+		"port": 10805,
+		"sniffing": {
+			"enabled": true,
+			"routeOnly": true,
+			"destOverride": ["tls"]
+		}
+	}],
+	"outbounds": [{
+		"tag": "o-block",
+		"protocol": "blackhole",
+		"settings": {
+			"response": {
+				"type": "none"
+			}
+		}
+	}, {
+		"tag": "o-direct",
+		"protocol": "freedom",
+		"settings": {
+			"domainStrategy": "AsIs"
+		}
+	}, {
+		"tag": "o-remote",
+		"protocol": "vless",
+		"settings": {
+			"address": "__SERVER__",
+			"port": __PORT__,
+			"flow": "xtls-rprx-vision",
+			"id": "__UUID__",
+			"encryption": "none"
+		},
+		"streamSettings": {
+			"network": "raw",
+			"security": "reality",
+			"realitySettings": {
+				"serverName": "__SERVER__",
+				"fingerprint": "chrome",
+				"shortId": "__SID__",
+				"password": "__PBK__",
+				"spiderX": "/"
+			},
+			"rawSettings": {
+				"header": {
+					"type": "none"
+				}
+			}
+		}
+	}],
+	"routing": {
+		"domainStrategy": "IPOnDemand",
+		"rules": [{
+			"name": "direct-local-ip",
+			"ip": [
+				"0.0.0.0/8",
+				"10.0.0.0/8",
+				"127.0.0.0/8",
+				"169.254.0.0/16",
+				"172.16.0.0/12",
+				"192.0.0.0/24",
+				"192.0.2.0/24",
+				"192.88.99.0/24",
+				"192.168.0.0/16",
+				"198.51.100.0/24",
+				"203.0.113.0/24",
+				"224.0.0.0/4",
+				"240.0.0.0/4",
+				"::/127",
+				"fc00::/7",
+				"fe80::/10",
+				"ff00::/8"
+			],
+			"outboundTag": "o-direct"
+		}, {
+			"name": "route-all",
+			"port": "1-65535",
+			"outboundTag": "o-remote"
+		}]
+	}
+}
