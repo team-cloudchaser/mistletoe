@@ -34,7 +34,7 @@ func IsDir(path string) bool {
 
 func GetConstrainedScanner(file *os.File) *bufio.Scanner {
 	lineReader := bufio.NewScanner(file)
-	var lineBuffer []byte = make([]byte, 16384)
+	var lineBuffer []byte = make([]byte, 1048576)
 	lineReader.Buffer(lineBuffer, len(lineBuffer))
 	return lineReader
 }
